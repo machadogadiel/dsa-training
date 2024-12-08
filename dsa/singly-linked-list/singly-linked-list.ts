@@ -22,7 +22,6 @@ export class LinkedList {
   /**
    * @param {number} index
    * @return {number}
-   *
    */
   get(index: number): number {
     if (!this.head || index > this.size) return -1;
@@ -31,10 +30,12 @@ export class LinkedList {
     let currentNode = this.head;
 
     // iterate to the next node, until we find the node we want
-    while (counter !== index && currentNode.next !== null) {
+    while (counter !== index && currentNode) {
       counter++;
       currentNode = currentNode.next;
     }
+
+    if (!currentNode) return -1;
 
     return currentNode.value;
   }
@@ -49,6 +50,7 @@ export class LinkedList {
     const previousHead = this.head;
 
     this.head = new ListNode(val, previousHead || null);
+
     if (!this.tail) {
       this.tail = this.head;
     }
@@ -79,17 +81,22 @@ export class LinkedList {
    * @return {boolean}
    */
   remove(index: number): boolean {
-    if (index > this.size) return false;
+    if (index > this.size || this.size === 0) return false;
 
     let counter = 1;
     let currentNode = this.head;
 
-    if (index === 0 && currentNode?.next === null) {
-      this.head = null;
-      this.tail = null;
-      this.size = 0;
+    if (index === 0) {
+      if (!currentNode?.next) {
+        this.head = null;
+        this.tail = null;
+        this.size = 0;
 
-      return true;
+        return true;
+      } else {
+        this.head = this.head!.next;
+        this.size--;
+      }
     }
 
     while (counter !== index && currentNode?.next) {
